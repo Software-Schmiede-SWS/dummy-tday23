@@ -2,13 +2,14 @@ using DummyApp.Client.Pages;
 using DummyApp.Components;
 using DummyApp.Components.Account;
 using DummyApp.Data;
+using DummyApp.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace DummyApp;
 
-public class Program
+public static class Program
 {
     public static void Main(string[] args)
     {
@@ -43,6 +44,8 @@ public class Program
 
         builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+        builder.Services.AddScoped<IDummyService, DummyService>();
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -50,6 +53,7 @@ public class Program
         {
             app.UseWebAssemblyDebugging();
             app.UseMigrationsEndPoint();
+            app.UseDeveloperExceptionPage();
         }
         else
         {
