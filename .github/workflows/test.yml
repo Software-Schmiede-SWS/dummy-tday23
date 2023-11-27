@@ -6,6 +6,7 @@ on:
     branches: [ main, master ]
 env:
     DOTNET_VERSION: '8.0'
+    BUILD_CONFIGURATION: 'Release'
 jobs:
   test:
     timeout-minutes: 60
@@ -27,7 +28,7 @@ jobs:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-${{ env.cache-name }}
 
-    - run: dotnet build --configuration Release
+    - run: dotnet build --configuration ${{ env.BUILD_CONFIGURATION }}
       working-directory: ./src
 
     - name: Cache Playwright Browser Binaries
@@ -40,15 +41,14 @@ jobs:
         key: ${{ runner.os }}-${{ env.cache-name }}
 
     - name: Ensure browsers are installed
-      run: pwsh ./src/DummyApp.UiTests/bin/Debug/net${{ env.DOTNET_VERSION }}/playwright.ps1 install --with-deps
+      run: pwsh ./src/DummyApp.UiTests/bin/${{ env.BUILD_CONFIGURATION }}/net${{ env.DOTNET_VERSION }}/playwright.ps1 install --with-deps
 
     - name: Run your tests
       working-directory: ./src
-      run: dotnet test --configuration Release --no-restore --verbosity normal --collect:"XPlat Code Coverage" --results-directory "../TestResults"
+      run: dotnet test --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore --verbosity normal --collect:"XPlat Code Coverage" --results-directory "../TestResults"
 
     - name: Upload coverage reports to Codecov
       if: ${{ github.event_name == 'push' }}
       uses: codecov/codecov-action@v3
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        directory: ./src/TestResults/
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
