@@ -6,6 +6,7 @@ on:
     branches: [ main, master ]
 env:
     DOTNET_VERSION: '8.0'
+    BUILD_CONFIGURATION: 'Release'
 jobs:
   build:
     timeout-minutes: 60
@@ -27,5 +28,5 @@ jobs:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-${{ env.cache-name }}
 
-    - run: dotnet build --configuration Release
+    - run: dotnet build --configuration ${{ env.BUILD_CONFIGURATION }}
       working-directory: ./src
