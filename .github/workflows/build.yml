@@ -27,5 +27,5 @@ jobs:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-${{ env.cache-name }}
 
-    - run: dotnet build
+    - run: dotnet build --configuration Release
       working-directory: ./src
