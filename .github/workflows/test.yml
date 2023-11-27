@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [ main, master ]
 env:
-    DOTNET_VERSION: 8.0
+    DOTNET_VERSION: '8.0'
 jobs:
   test:
     timeout-minutes: 60

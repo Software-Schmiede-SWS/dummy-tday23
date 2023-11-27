@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [ main, master ]
 env:
-    DOTNET_VERSION: 8.0
+    DOTNET_VERSION: '8.0'
 jobs:
   test:
     timeout-minutes: 60
@@ -29,25 +29,3 @@ jobs:
 
     - run: dotnet build
       working-directory: ./src
-
-    - name: Cache Playwright Browser Binaries
-      id: playwright-browser-binaries
-      uses: actions/cache@v3
-      env:
-        cache-name: playwright-browser-binaries
-      with:
-        path: ~/.cache/ms-playwright
-        key: ${{ runner.os }}-${{ env.cache-name }}
-
-    - name: Ensure browsers are installed
-      run: pwsh ./src/DummyApp.UiTests/bin/Debug/net${{ env.DOTNET_VERSION }}/playwright.ps1 install --with-deps
-
-    - name: Run your tests
-      working-directory: ./src
-      run: dotnet test
-
-    - name: Upload coverage reports to Codecov
-      if: ${{ github.event_name == 'push' }}
-      uses: codecov/codecov-action@v3
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
