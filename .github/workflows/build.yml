@@ -1,0 +1,31 @@
+name: Build
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+env:
+    DOTNET_VERSION: '8.0'
+jobs:
+  build:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}.x
+
+    - name: Cache NuGet Packages
+      id: nuget-packages
+      uses: actions/cache@v3
+      env:
+        cache-name: nuget-package-cache
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-${{ env.cache-name }}
+
+    - run: dotnet build
+      working-directory: ./src
