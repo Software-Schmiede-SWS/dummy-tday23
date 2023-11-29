@@ -6,7 +6,8 @@ on:
     branches: [ main, master ]
 env:
     DOTNET_VERSION: '8.0'
-    BUILD_CONFIGURATION: 'Release'
+    BUILD_CONFIGURATION: 'release'  # 'debug' or 'release' (lowercase!)
+    UITEST_PROJECT: 'DummyApp.UiTests'
 jobs:
   test:
     timeout-minutes: 60
@@ -41,7 +42,7 @@ jobs:
         key: ${{ runner.os }}-${{ env.cache-name }}
 
     - name: Ensure browsers are installed
-      run: pwsh ./src/DummyApp.UiTests/bin/${{ env.BUILD_CONFIGURATION }}/net${{ env.DOTNET_VERSION }}/playwright.ps1 install --with-deps
+      run: pwsh ./artifacts/bin/${{ env.UITEST_PROJECT }}/${{ env.BUILD_CONFIGURATION }}/playwright.ps1 install --with-deps
 
     - name: Run your tests
       working-directory: ./src
