@@ -6,7 +6,7 @@ on:
     branches: [ main, master ]
 env:
     DOTNET_VERSION: '8.0'
-    BUILD_CONFIGURATION: 'Release'
+    BUILD_CONFIGURATION: 'release'  # 'debug' or 'release' (lowercase!)
     UITEST_PROJECT: 'DummyApp.UiTests'
 jobs:
   test:
