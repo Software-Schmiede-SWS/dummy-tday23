@@ -6,12 +6,19 @@ using DummyApp.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
+
+[assembly:InternalsVisibleTo("DummyApp.Tests")]
+[assembly:InternalsVisibleTo("DummyApp.UiTests")]
 
 namespace DummyApp;
 
 public static class Program
 {
-    public static void Main(string[] args)
+    public static void Main(string[] args) =>
+        BuildApp(args).Run();
+
+    internal static WebApplication BuildApp(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -26,10 +33,10 @@ public static class Program
         builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 
         builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = IdentityConstants.ApplicationScheme;
-                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-            })
+        {
+            options.DefaultScheme = IdentityConstants.ApplicationScheme;
+            options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+        })
             .AddIdentityCookies();
 
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -75,6 +82,6 @@ public static class Program
         // Add additional endpoints required by the Identity /Account Razor components.
         app.MapAdditionalIdentityEndpoints();
 
-        app.Run();
+        return app;
     }
 }
